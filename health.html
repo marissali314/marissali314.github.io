@@ -619,19 +619,26 @@
                 wrapper.querySelector('.edit-icon').style.display = 'inline-block';
                 form.style.display = 'none';
 
-                // Get the current file content
-                const response = await fetch('save_changes.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        file: 'health.html',
-                        content: document.documentElement.outerHTML
-                    })
-                });
+                try {
+                    const response = await fetch('/api/save', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            password: 'focus',
+                            file: 'health.html',
+                            content: document.documentElement.outerHTML
+                        })
+                    });
 
-                if (!response.ok) {
+                    if (!response.ok) {
+                        throw new Error('Failed to save changes');
+                    }
+
+                    alert('Changes saved successfully!');
+                } catch (error) {
+                    console.error('Error saving changes:', error);
                     alert('Failed to save changes. Please try again.');
                 }
             }
