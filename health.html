@@ -1,0 +1,664 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>Health Report - Marissa Li</title>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+                font-family: 'Arial', sans-serif;
+            }
+
+            body {
+                line-height: 1.6;
+                color: #333;
+                max-width: 800px;
+                margin: 0 auto;
+                padding: 20px;
+                background-color: #f5f5f5;
+            }
+
+            .intro {
+                text-align: center;
+                padding: 40px 0;
+            }
+
+            .intro h1 {
+                font-size: 2.5em;
+                margin-bottom: 10px;
+                color: #2c3e50;
+            }
+
+            nav {
+                display: flex;
+                justify-content: space-between;
+                padding: 20px 0;
+                border-bottom: 1px solid #ddd;
+                margin-bottom: 40px;
+            }
+
+            .nav-links a {
+                margin-right: 20px;
+                text-decoration: none;
+                color: #333;
+            }
+
+            .social-links a {
+                margin-left: 15px;
+                color: #333;
+                font-size: 1.2em;
+            }
+
+            .health-section {
+                background: white;
+                padding: 30px;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                margin-bottom: 30px;
+            }
+
+            .health-section h2 {
+                color: #2c3e50;
+                margin-bottom: 20px;
+                padding-bottom: 10px;
+                border-bottom: 2px solid #3498db;
+            }
+
+            .health-section h3 {
+                color: #34495e;
+                margin: 20px 0 10px 0;
+            }
+
+            .health-item {
+                margin-bottom: 20px;
+                padding-left: 20px;
+                border-left: 3px solid #3498db;
+            }
+
+            .health-item h4 {
+                color: #2c3e50;
+                margin-bottom: 5px;
+            }
+
+            .health-item p {
+                color: #666;
+                margin-bottom: 10px;
+            }
+
+            .health-item ul {
+                margin-left: 20px;
+                margin-bottom: 10px;
+            }
+
+            .health-item li {
+                margin-bottom: 5px;
+            }
+
+            .edit-icon {
+                position: absolute;
+                right: 20px;
+                top: 20px;
+                background: none;
+                border: none;
+                cursor: pointer;
+                color: #666;
+                padding: 8px;
+                transition: color 0.3s ease;
+                display: none;
+            }
+
+            .edit-icon:hover {
+                color: #333;
+            }
+
+            .auth-button {
+                position: fixed;
+                bottom: 30px;
+                right: 30px;
+                padding: 12px 24px;
+                background: #3498db;
+                color: white;
+                border: none;
+                border-radius: 25px;
+                cursor: pointer;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+                transition: all 0.3s ease;
+                font-size: 14px;
+                z-index: 1000;
+            }
+
+            .auth-button:hover {
+                background: #2980b9;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            }
+
+            .content-wrapper {
+                position: relative;
+            }
+
+            .edit-form {
+                margin-top: 15px;
+            }
+
+            .edit-form textarea {
+                width: 100%;
+                min-height: 200px;
+                padding: 12px;
+                margin-bottom: 20px;
+                border: 2px solid #e0e0e0;
+                border-radius: 8px;
+                font-size: 14px;
+                line-height: 1.6;
+                transition: border-color 0.3s ease;
+            }
+
+            .edit-form textarea:focus {
+                outline: none;
+                border-color: #3498db;
+            }
+
+            .edit-form-buttons {
+                display: flex;
+                gap: 10px;
+                justify-content: flex-end;
+            }
+
+            .edit-form button {
+                padding: 10px 20px;
+                border: none;
+                border-radius: 6px;
+                font-size: 14px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+
+            .edit-form button:first-child {
+                background: #3498db;
+                color: white;
+            }
+
+            .edit-form button:last-child {
+                background: #e0e0e0;
+                color: #333;
+            }
+
+            .edit-form button:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            }
+
+            .edit-form button:first-child:hover {
+                background: #2980b9;
+            }
+
+            .edit-form button:last-child:hover {
+                background: #d0d0d0;
+            }
+
+            footer {
+                text-align: center;
+                padding: 20px 0;
+                color: #666;
+                margin-top: 40px;
+            }
+
+            @media (max-width: 600px) {
+                body {
+                    padding: 10px;
+                }
+
+                .intro h1 {
+                    font-size: 2em;
+                }
+
+                nav {
+                    flex-direction: column;
+                    text-align: center;
+                }
+
+                .social-links {
+                    margin-top: 15px;
+                }
+
+                .health-section {
+                    padding: 20px;
+                }
+            }
+
+            .modal-overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 1000;
+                backdrop-filter: blur(5px);
+            }
+
+            .modal {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: white;
+                padding: 30px;
+                border-radius: 12px;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+                width: 90%;
+                max-width: 400px;
+                z-index: 1001;
+            }
+
+            .modal h2 {
+                margin-bottom: 20px;
+                color: #2c3e50;
+                font-size: 1.5em;
+                text-align: center;
+            }
+
+            .modal p {
+                margin-bottom: 25px;
+                color: #666;
+                text-align: center;
+                line-height: 1.6;
+            }
+
+            .password-input {
+                width: 100%;
+                padding: 12px;
+                margin-bottom: 20px;
+                border: 2px solid #e0e0e0;
+                border-radius: 8px;
+                font-size: 16px;
+                transition: border-color 0.3s ease;
+            }
+
+            .password-input:focus {
+                outline: none;
+                border-color: #3498db;
+            }
+
+            .modal-buttons {
+                display: flex;
+                justify-content: center;
+                gap: 10px;
+            }
+
+            .modal-button {
+                padding: 12px 24px;
+                border: none;
+                border-radius: 8px;
+                font-size: 14px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+
+            .modal-button.primary {
+                background: #3498db;
+                color: white;
+            }
+
+            .modal-button.secondary {
+                background: #e0e0e0;
+                color: #333;
+            }
+
+            .modal-button:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            }
+
+            .modal-button.primary:hover {
+                background: #2980b9;
+            }
+
+            .modal-button.secondary:hover {
+                background: #d0d0d0;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="intro">
+            <h1>Health Report</h1>
+        </div>
+
+        <nav>
+            <div class="nav-links">
+                <a href="index.html">My Work</a>
+                <a href="about.html">About</a>
+                <a href="places.html">Places I've Been</a>
+                <a href="health.html">Health</a>
+            </div>
+            <div class="social-links">
+                <a href="https://x.com/marissali_"><i class="fab fa-twitter"></i></a>
+                <a href="https://www.facebook.com/marissali.314/"><i class="fab fa-facebook"></i></a>
+                <a href="https://www.instagram.com/marissa.li314/"><i class="fab fa-instagram"></i></a>
+                <a href="https://github.com/marissali314"><i class="fab fa-github"></i></a>
+            </div>
+        </nav>
+
+        <main id="health-content" style="display: none;">
+            <div class="health-section">
+                <div class="content-wrapper">
+                    <h2>Patient Information</h2>
+                    <div class="health-item">
+                        <p><strong>Location:</strong> Moved from Chicago to San Francisco. Currently in the process of changing doctors.</p>
+                        <p><strong>Weight:</strong> ~155 lbs (self-described as overweight)</p>
+                    </div>
+                    <button class="edit-icon" onclick="toggleEdit(this)">
+                        <i class="fas fa-pencil-alt"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="health-section">
+                <div class="content-wrapper">
+                    <h2>Physical Health</h2>
+                    
+                    <h3>Wrist Pain (New)</h3>
+                    <div class="health-item">
+                        <ul>
+                            <li>Symptoms: Consistent pain in left wrist, difficulty bending hand backward</li>
+                            <li>Possible Causes: Carpal tunnel syndrome, tendonitis, or other musculoskeletal issues</li>
+                            <li>Recommendations: Evaluation by a primary care provider or orthopedic specialist; imaging or nerve conduction studies may be appropriate</li>
+                        </ul>
+                    </div>
+
+                    <h3>Dry Eye (Meibomian Gland Dysfunction)</h3>
+                    <div class="health-item">
+                        <ul>
+                            <li>Symptoms: Dryness, frequent blinking, lack of sufficient tear lubrication, symptom severity of ~8/10</li>
+                            <li>Current Treatment: Oasis tear drops or other OTC tear drops</li>
+                            <li>Notes: Condition has persisted since junior year of college and may be exacerbated by high screen time</li>
+                        </ul>
+                    </div>
+
+                    <h3>Weight and Nutrition</h3>
+                    <div class="health-item">
+                        <ul>
+                            <li>Concerns: Patient feels they have reached their highest weight; interested in weight management</li>
+                            <li>Lifestyle Factors: Stress-related overeating or binge eating patterns</li>
+                        </ul>
+                    </div>
+
+                    <h3>Scoliosis and Back Pain</h3>
+                    <div class="health-item">
+                        <ul>
+                            <li>Previous Treatment: Schroth therapy</li>
+                            <li>Current Status: Would like to continue therapy in San Francisco</li>
+                            <li>Notes: Chronic back pain can impact mobility and general well-being</li>
+                        </ul>
+                    </div>
+
+                    <h3>Concussion History (2015)</h3>
+                    <div class="health-item">
+                        <ul>
+                            <li>Patient Concern: Worries about potential long-term effects on brain health</li>
+                            <li>Notes: Interested in a brain scan</li>
+                        </ul>
+                    </div>
+                    <button class="edit-icon" onclick="toggleEdit(this)">
+                        <i class="fas fa-pencil-alt"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="health-section">
+                <div class="content-wrapper">
+                    <h2>Mental Health</h2>
+                    
+                    <h3>ADHD, Anxiety, Depression</h3>
+                    <div class="health-item">
+                        <ul>
+                            <li>Timeline: Depression since 2017; ADHD, anxiety, and depression diagnosed in early 2024</li>
+                            <li>Current Treatment: Strattera (atomoxetine) for ADHD</li>
+                            <li>Therapy: 1-2 sessions per week</li>
+                        </ul>
+                    </div>
+
+                    <h3>Exploring Autism and Borderline Personality Disorder</h3>
+                    <div class="health-item">
+                        <ul>
+                            <li>Patient Concern: Undiagnosed autism spectrum disorder and borderline personality disorder</li>
+                            <li>Notes: Professional assessment needed</li>
+                        </ul>
+                    </div>
+
+                    <h3>Gender Identity Exploration</h3>
+                    <div class="health-item">
+                        <ul>
+                            <li>Patient Goal: Considering T therapy or other options related to nonbinary/trans identity</li>
+                            <li>Notes: Seeking counseling and endocrine consultations</li>
+                        </ul>
+                    </div>
+                    <button class="edit-icon" onclick="toggleEdit(this)">
+                        <i class="fas fa-pencil-alt"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="health-section">
+                <div class="content-wrapper">
+                    <h2>Recommended Next Steps</h2>
+                    <div class="health-item">
+                        <h4>Establish Primary Care in San Francisco</h4>
+                        <p>Look for an integrative clinic or PCP who can coordinate care among specialists</p>
+                    </div>
+
+                    <div class="health-item">
+                        <h4>Specialist Follow-Ups Needed</h4>
+                        <ul>
+                            <li>Ophthalmology: Evaluate MGD and dry eye status</li>
+                            <li>Neurology: Assess long-term impact from past concussion</li>
+                            <li>Mental Health: Continue therapy and medication management</li>
+                            <li>Physical Therapy: Resume Schroth therapy for scoliosis</li>
+                        </ul>
+                    </div>
+                    <button class="edit-icon" onclick="toggleEdit(this)">
+                        <i class="fas fa-pencil-alt"></i>
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2024 Marissa Li</p>
+        </footer>
+
+        <button id="loginBtn" class="auth-button" onclick="authenticate()">Update Me</button>
+        <button id="logoutBtn" class="auth-button" onclick="logout()" style="display: none;">Done</button>
+
+        <div id="login-prompt" class="health-section" style="text-align: center; padding: 50px;">
+            <h2>Medical Information Access</h2>
+            <p style="margin: 20px 0;">This page contains private medical information. Please enter the password to view.</p>
+            <button class="auth-button" style="position: static; display: inline-block;" onclick="authenticateView()">Access Health Records</button>
+        </div>
+
+        <div id="auth-modal" class="modal-overlay">
+            <div class="modal">
+                <h2 id="modal-title">Authentication Required</h2>
+                <p id="modal-description">Please enter your password to access the health records.</p>
+                <input type="password" id="password-input" class="password-input" placeholder="Enter password" onkeypress="handleKeyPress(event)">
+                <div class="modal-buttons">
+                    <button class="modal-button secondary" onclick="closeAuthModal()">Cancel</button>
+                    <button class="modal-button primary" onclick="submitPassword()">Submit</button>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            let isAuthenticated = false;
+            let isViewAuthenticated = false;
+            let currentAuthMode = ''; // 'view' or 'edit'
+
+            window.onload = function() {
+                document.getElementById('health-content').style.display = 'none';
+                document.getElementById('login-prompt').style.display = 'block';
+            }
+
+            function showAuthModal(mode) {
+                currentAuthMode = mode;
+                const modalTitle = document.getElementById('modal-title');
+                const modalDescription = document.getElementById('modal-description');
+                
+                if (mode === 'edit') {
+                    modalTitle.textContent = 'Edit Mode Authentication';
+                    modalDescription.textContent = 'Please enter your password to make changes to the health records.';
+                } else {
+                    modalTitle.textContent = 'Authentication Required';
+                    modalDescription.textContent = 'Please enter your password to access the health records.';
+                }
+                
+                document.getElementById('auth-modal').style.display = 'block';
+                document.getElementById('password-input').value = '';
+                document.getElementById('password-input').focus();
+            }
+
+            function closeAuthModal() {
+                document.getElementById('auth-modal').style.display = 'none';
+                document.getElementById('password-input').value = '';
+            }
+
+            function handleKeyPress(event) {
+                if (event.key === 'Enter') {
+                    submitPassword();
+                }
+            }
+
+            async function submitPassword() {
+                const password = document.getElementById('password-input').value;
+                if (password === "focus") {
+                    if (currentAuthMode === 'view') {
+                        isViewAuthenticated = true;
+                        document.getElementById('health-content').style.display = 'block';
+                        document.getElementById('login-prompt').style.display = 'none';
+                    } else if (currentAuthMode === 'edit') {
+                        // Authenticate with server
+                        const response = await fetch('authenticate.php', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ password: password })
+                        });
+
+                        if (response.ok) {
+                            isAuthenticated = true;
+                            document.querySelectorAll('.edit-icon').forEach(btn => {
+                                btn.style.display = 'inline-block';
+                            });
+                            document.getElementById('loginBtn').style.display = 'none';
+                            document.getElementById('logoutBtn').style.display = 'inline-block';
+                        } else {
+                            alert("Authentication failed!");
+                            document.getElementById('password-input').value = '';
+                            return;
+                        }
+                    }
+                    closeAuthModal();
+                } else {
+                    alert("Incorrect password!");
+                    document.getElementById('password-input').value = '';
+                }
+            }
+
+            function authenticateView() {
+                showAuthModal('view');
+            }
+
+            function authenticate() {
+                showAuthModal('edit');
+            }
+
+            function toggleEdit(button) {
+                if (!isAuthenticated) {
+                    authenticate();
+                    if (!isAuthenticated) return;
+                }
+                
+                const wrapper = button.closest('.content-wrapper');
+                const content = wrapper.querySelector('.health-item');
+                const form = wrapper.querySelector('.edit-form');
+                
+                if (!form) {
+                    const editForm = document.createElement('div');
+                    editForm.className = 'edit-form';
+                    editForm.style.display = 'none';
+                    editForm.innerHTML = `
+                        <textarea class="edit-textarea">${content.innerHTML}</textarea>
+                        <div class="edit-form-buttons">
+                            <button onclick="saveChanges(this)">Save Changes</button>
+                            <button onclick="cancelEdit(this)">Cancel</button>
+                        </div>
+                    `;
+                    wrapper.appendChild(editForm);
+                }
+                
+                const textarea = wrapper.querySelector('.edit-textarea');
+                textarea.value = content.innerHTML;
+                content.style.display = 'none';
+                button.style.display = 'none';
+                wrapper.querySelector('.edit-form').style.display = 'block';
+            }
+
+            async function saveChanges(button) {
+                const wrapper = button.closest('.content-wrapper');
+                const content = wrapper.querySelector('.health-item');
+                const form = wrapper.querySelector('.edit-form');
+                const textarea = form.querySelector('.edit-textarea');
+                
+                content.innerHTML = textarea.value;
+                content.style.display = 'block';
+                wrapper.querySelector('.edit-icon').style.display = 'inline-block';
+                form.style.display = 'none';
+
+                // Get the current file content
+                const response = await fetch('save_changes.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        file: 'health.html',
+                        content: document.documentElement.outerHTML
+                    })
+                });
+
+                if (!response.ok) {
+                    alert('Failed to save changes. Please try again.');
+                }
+            }
+
+            function cancelEdit(button) {
+                const wrapper = button.closest('.content-wrapper');
+                const content = wrapper.querySelector('.health-item');
+                const form = wrapper.querySelector('.edit-form');
+                
+                content.style.display = 'block';
+                wrapper.querySelector('.edit-icon').style.display = 'inline-block';
+                form.style.display = 'none';
+            }
+
+            async function logout() {
+                if (isAuthenticated) {
+                    // Logout from server
+                    await fetch('logout.php', { method: 'POST' });
+                }
+                
+                isAuthenticated = false;
+                document.querySelectorAll('.edit-icon').forEach(btn => {
+                    btn.style.display = 'none';
+                });
+                document.getElementById('loginBtn').style.display = 'inline-block';
+                document.getElementById('logoutBtn').style.display = 'none';
+            }
+        </script>
+    </body>
+</html> 

@@ -6,253 +6,442 @@
 -->
 <html>
 	<head>
-		<title>Massively by HTML5 UP</title>
+		<title>Marissa Li</title>
 		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<link rel="stylesheet" href="assets/css/main.css" />
-		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+		<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+				font-family: 'Arial', sans-serif;
+			}
+
+			body {
+				line-height: 1.6;
+				color: #333;
+				max-width: 800px;
+				margin: 0 auto;
+				padding: 20px;
+				background-color: #f5f5f5;
+			}
+
+			.intro {
+				text-align: center;
+				padding: 60px 0;
+			}
+
+			.intro h1 {
+				font-size: 3em;
+				margin-bottom: 10px;
+			}
+
+			.intro p {
+				font-size: 1.2em;
+				color: #666;
+			}
+
+			nav {
+				display: flex;
+				justify-content: space-between;
+				padding: 20px 0;
+				border-bottom: 1px solid #ddd;
+				margin-bottom: 40px;
+			}
+
+			.nav-links a {
+				margin-right: 20px;
+				text-decoration: none;
+				color: #333;
+			}
+
+			.auth-section {
+				display: flex;
+				align-items: center;
+			}
+
+			.login-btn {
+				padding: 5px 15px;
+				margin-right: 10px;
+				background: #4a4a4a;
+				color: white;
+				border: none;
+				border-radius: 3px;
+				cursor: pointer;
+			}
+
+			.social-links a {
+				margin-left: 15px;
+				color: #333;
+				font-size: 1.2em;
+			}
+
+			.work-entry {
+				margin-bottom: 40px;
+				position: relative;
+				background: white;
+				padding: 20px;
+				border-radius: 8px;
+				box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+			}
+
+			.date {
+				color: #666;
+				font-size: 0.9em;
+				margin-bottom: 10px;
+				display: block;
+			}
+
+			.work-content {
+				margin-bottom: 15px;
+			}
+
+			.edit-btn {
+				position: absolute;
+				right: 20px;
+				top: 20px;
+				padding: 5px 15px;
+				background: #4a4a4a;
+				color: white;
+				border: none;
+				border-radius: 3px;
+				cursor: pointer;
+			}
+
+			.edit-btn:hover {
+				background: #666;
+			}
+
+			.edit-form {
+				margin-top: 15px;
+			}
+
+			.edit-form textarea {
+				width: 100%;
+				min-height: 100px;
+				padding: 10px;
+				margin-bottom: 10px;
+				border: 1px solid #ddd;
+				border-radius: 4px;
+			}
+
+			.edit-form button {
+				padding: 5px 15px;
+				margin-right: 10px;
+				background: #4a4a4a;
+				color: white;
+				border: none;
+				border-radius: 3px;
+				cursor: pointer;
+			}
+
+			footer {
+				text-align: center;
+				padding: 20px 0;
+				color: #666;
+				margin-top: 40px;
+			}
+
+			@media (max-width: 600px) {
+				body {
+					padding: 10px;
+				}
+
+				.intro h1 {
+					font-size: 2em;
+				}
+
+				nav {
+					flex-direction: column;
+					text-align: center;
+				}
+
+				.social-links {
+					margin-top: 15px;
+				}
+			}
+
+			.travel-timeline {
+				position: relative;
+				padding-left: 30px;
+			}
+
+			.travel-timeline::before {
+				content: '';
+				position: absolute;
+				left: 0;
+				top: 0;
+				bottom: 0;
+				width: 2px;
+				background: #4a4a4a;
+			}
+
+			.travel-entry {
+				position: relative;
+				margin-bottom: 30px;
+				padding-left: 20px;
+			}
+
+			.travel-entry::before {
+				content: '';
+				position: absolute;
+				left: -5px;
+				top: 5px;
+				width: 12px;
+				height: 12px;
+				border-radius: 50%;
+				background: #4a4a4a;
+			}
+
+			.travel-date {
+				font-size: 0.9em;
+				color: #666;
+				margin-bottom: 5px;
+			}
+
+			.travel-location {
+				font-weight: bold;
+				margin-bottom: 5px;
+			}
+
+			.travel-highlight {
+				color: #666;
+				font-style: italic;
+			}
+
+			.map-container {
+				height: 400px;
+				width: 100%;
+				border-radius: 8px;
+				overflow: hidden;
+			}
+
+			.leaflet-popup-content {
+				font-size: 14px;
+				line-height: 1.4;
+			}
+
+			.location-title {
+				font-weight: bold;
+				margin-bottom: 5px;
+			}
+
+			.location-date {
+				color: #666;
+				font-size: 0.9em;
+			}
+
+			.location-highlight {
+				font-style: italic;
+				margin-top: 5px;
+			}
+
+			.auth-button {
+				position: fixed;
+				bottom: 30px;
+				right: 30px;
+				padding: 12px 24px;
+				background: #4a4a4a;
+				color: white;
+				border: none;
+				border-radius: 25px;
+				cursor: pointer;
+				box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+				transition: all 0.3s ease;
+				font-size: 14px;
+				z-index: 1000;
+			}
+
+			.auth-button:hover {
+				background: #666;
+				transform: translateY(-2px);
+				box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+			}
+
+			.edit-icon {
+				position: absolute;
+				right: 20px;
+				top: 20px;
+				background: none;
+				border: none;
+				cursor: pointer;
+				color: #666;
+				padding: 8px;
+				transition: color 0.3s ease;
+				display: none;
+			}
+
+			.edit-icon:hover {
+				color: #333;
+			}
+		</style>
 	</head>
-	<body class="is-preload">
+	<body>
+		<div class="intro">
+			<h1>Hi, I'm Marissa</h1>
+			<p>Idealist, Risk-Taker, always in search of something more</p>
+		</div>
 
-		<!-- Wrapper -->
-			<div id="wrapper" class="fade-in">
+		<nav>
+			<div class="nav-links">
+				<a href="index.html">My Work</a>
+				<a href="about.html">About</a>
+				<a href="places.html">Places I've Been</a>
+				<a href="health.html">Health</a>
+			</div>
+			<div class="social-links">
+				<a href="https://x.com/marissali_"><i class="fab fa-twitter"></i></a>
+				<a href="https://www.facebook.com/marissali.314/"><i class="fab fa-facebook"></i></a>
+				<a href="https://www.instagram.com/marissa.li314/"><i class="fab fa-instagram"></i></a>
+				<a href="https://github.com/marissali314"><i class="fab fa-github"></i></a>
+			</div>
+		</nav>
 
-				<!-- Intro -->
-					<div id="intro">
-						<h1>Hi,<br />
-						I'm Marissa</h1>
-						<p>Idealist, Risk-Taker, always in search of something more</p>
-						<ul class="actions">
-							<li><a href="#header" class="button icon solid solo fa-arrow-down scrolly">Continue</a></li>
-						</ul>
-					</div>
-
-				<!-- Header -->
-					<header id="header">
-						<a href="index.html" class="logo">Home</a>
-					</header>
-
-				<!-- Nav -->
-					<nav id="nav">
-						<ul class="links">
-							<li class="active"><a href="index.html">My Work</a></li>
-							<li><a href="generic.html">About</a></li>
-							<!-- <li><a href="elements.html">Elements Reference</a></li> -->
-						</ul>
-						<ul class="icons">
-							<li><a href="https://x.com/marissali_" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
-							<li><a href="https://www.facebook.com/marissali.314/" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
-							<li><a href="https://www.instagram.com/marissa.li314/" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
-							<li><a href="https://github.com/marissali314" class="icon brands fa-github"><span class="label">GitHub</span></a></li>
-						</ul>
-					</nav>
-
-				<!-- Main -->
-					<div id="main">
-
-						<!-- Featured Post -->
-							<!-- <article class="post featured"> -->
-								<!-- <h2><a href="#">About Me<br /></h2> -->
-								<header class="major">
-									<span class="date">August 2024 - Now</span>
-									<p>Trader at an Options Market Maker in Chicago</p>
-
-									<span class="date">2023 - 2024</span>
-									<p>Traveler, In Search of Enlightenment</p>
-									</p> Burned out with an existential crisis Junior year and decided to study abroad in Iceland for my last semester of college<br />
-										Traveled across Europe and Asia. Crossed some things off the bucket list. 
-
-
-										Saw the northern lights more times than I can count. 
-										Went to my first F1 race in Shanghai. 
-										Saw pandas in Chengdu. 
-										Went to a Taylor Swift and Coldplay concert in Germany. </p>
-
-
-								
-
-		
-
-									<span class="date">2021 - Now</span>
-									<p>The crypto bull market drew me in, I finally stopped listening to what other people said about it and decided to learn myself and form my own judgement </p>
-									Some highlights
-									- Bought Solana at $14 this most recent cycle
-									- Shorted Luna on Drift at $48, covered at $4 (then Drift's insurance fund ran out, fortunately I got my coins back)
-
-
-	
-
-
-
-
-									<span class="date">December 2010 - August 2019</span>
-									<p>Competitive Chess Player Before Queen's Gambit Blew it up<br /> 
-										A member of the US delegation for World Youth Chess Championships in Uruguay and Greece<br />
-										</p>
-								</header>
-								<!-- <a href="#" class="image main"><img src="images/pic01.jpg" alt="" /></a>
-								<ul class="actions special">
-									<li><a href="#" class="button large">Full Story</a></li>
-								</ul> -->
-							<!-- </article> -->
-
-						<!-- Posts (will use when I have more blog posts) -->
-							<!-- <section class="posts">
-								<article>
-									<header>
-										<span class="date">April 24, 2017</span>
-										<h2><a href="#">Sed magna<br />
-										ipsum faucibus</a></h2>
-									</header>
-									<a href="#" class="image fit"><img src="images/pic02.jpg" alt="" /></a>
-									<p>Donec eget ex magna. Interdum et malesuada fames ac ante ipsum primis in faucibus. Pellentesque venenatis dolor imperdiet dolor mattis sagittis magna etiam.</p>
-									<ul class="actions special">
-										<li><a href="#" class="button">Full Story</a></li>
-									</ul>
-								</article>
-								<article>
-									<header>
-										<span class="date">April 22, 2017</span>
-										<h2><a href="#">Primis eget<br />
-										imperdiet lorem</a></h2>
-									</header>
-									<a href="#" class="image fit"><img src="images/pic03.jpg" alt="" /></a>
-									<p>Donec eget ex magna. Interdum et malesuada fames ac ante ipsum primis in faucibus. Pellentesque venenatis dolor imperdiet dolor mattis sagittis magna etiam.</p>
-									<ul class="actions special">
-										<li><a href="#" class="button">Full Story</a></li>
-									</ul>
-								</article>
-								<article>
-									<header>
-										<span class="date">April 18, 2017</span>
-										<h2><a href="#">Ante mattis<br />
-										interdum dolor</a></h2>
-									</header>
-									<a href="#" class="image fit"><img src="images/pic04.jpg" alt="" /></a>
-									<p>Donec eget ex magna. Interdum et malesuada fames ac ante ipsum primis in faucibus. Pellentesque venenatis dolor imperdiet dolor mattis sagittis magna etiam.</p>
-									<ul class="actions special">
-										<li><a href="#" class="button">Full Story</a></li>
-									</ul>
-								</article>
-								<article>
-									<header>
-										<span class="date">April 14, 2017</span>
-										<h2><a href="#">Tempus sed<br />
-										nulla imperdiet</a></h2>
-									</header>
-									<a href="#" class="image fit"><img src="images/pic05.jpg" alt="" /></a>
-									<p>Donec eget ex magna. Interdum et malesuada fames ac ante ipsum primis in faucibus. Pellentesque venenatis dolor imperdiet dolor mattis sagittis magna etiam.</p>
-									<ul class="actions special">
-										<li><a href="#" class="button">Full Story</a></li>
-									</ul>
-								</article>
-								<article>
-									<header>
-										<span class="date">April 11, 2017</span>
-										<h2><a href="#">Odio magna<br />
-										sed consectetur</a></h2>
-									</header>
-									<a href="#" class="image fit"><img src="images/pic06.jpg" alt="" /></a>
-									<p>Donec eget ex magna. Interdum et malesuada fames ac ante ipsum primis in faucibus. Pellentesque venenatis dolor imperdiet dolor mattis sagittis magna etiam.</p>
-									<ul class="actions special">
-										<li><a href="#" class="button">Full Story</a></li>
-									</ul>
-								</article>
-								<article>
-									<header>
-										<span class="date">April 7, 2017</span>
-										<h2><a href="#">Augue lorem<br />
-										primis vestibulum</a></h2>
-									</header>
-									<a href="#" class="image fit"><img src="images/pic07.jpg" alt="" /></a>
-									<p>Donec eget ex magna. Interdum et malesuada fames ac ante ipsum primis in faucibus. Pellentesque venenatis dolor imperdiet dolor mattis sagittis magna etiam.</p>
-									<ul class="actions special">
-										<li><a href="#" class="button">Full Story</a></li>
-									</ul>
-								</article>
-							</section> -->
-
-						<!-- Footer -->
-							<!-- <footer>
-								<div class="pagination">
-									<a href="#" class="previous">Prev</a>
-									<a href="#" class="page active">1</a>
-									<a href="#" class="page">2</a>
-									<a href="#" class="page">3</a>
-									<span class="extra">&hellip;</span>
-									<a href="#" class="page">8</a>
-									<a href="#" class="page">9</a>
-									<a href="#" class="page">10</a>
-									<a href="#" class="next">Next</a>
-								</div>
-							</footer> -->
-
-					</div>
-
-				<!-- Footer -->
-					<!-- <footer id="footer">
-						<section>
-							<form method="post" action="#">
-								<div class="fields">
-									<div class="field">
-										<label for="name">Name</label>
-										<input type="text" name="name" id="name" />
-									</div>
-									<div class="field">
-										<label for="email">Email</label>
-										<input type="text" name="email" id="email" />
-									</div>
-									<div class="field">
-										<label for="message">Message</label>
-										<textarea name="message" id="message" rows="3"></textarea>
-									</div>
-								</div>
-								<ul class="actions">
-									<li><input type="submit" value="Send Message" /></li>
-								</ul>
-							</form>
-						</section>
-						<section class="split contact">
-							<section class="alt">
-								<h3>Address</h3>
-								<p>1234 Somewhere Road #87257<br />
-								Nashville, TN 00000-0000</p>
-							</section>
-							<section>
-								<h3>Phone</h3>
-								<p><a href="#">(000) 000-0000</a></p>
-							</section>
-							<section>
-								<h3>Email</h3>
-								<p><a href="#">info@untitled.tld</a></p>
-							</section>
-							<section>
-								<h3>Social</h3>
-								<ul class="icons alt">
-									<li><a href="https://x.com/marissali_" class="icon brands alt fa-twitter"><span class="label">Twitter</span></a></li>
-									<li><a href="https://www.facebook.com/marissali.314/" class="icon brands alt fa-facebook-f"><span class="label">Facebook</span></a></li>
-									<li><a href="https://www.instagram.com/marissa.li314/" class="icon brands alt fa-instagram"><span class="label">Instagram</span></a></li>
-									<li><a href="https://github.com/marissali314" class="icon brands alt fa-github"><span class="label">GitHub</span></a></li>
-								</ul>
-							</section>
-						</section>
-					</footer> -->
-
-				<!-- Copyright -->
-					<div id="copyright">
-						<ul><li>&copy; 2024 Marissa Li</li><li>Design: <a href="https://html5up.net">HTML5 UP</a></li></ul>
-					</div>
-
+		<main>
+			<div class="work-entry">
+				<span class="date">August 2024 - Now</span>
+				<div class="content-wrapper">
+					<p class="work-content">Trader at an Options Market Maker in Chicago</p>
+					<button class="edit-icon" onclick="toggleEdit(this)">
+						<i class="fas fa-pencil-alt"></i>
+					</button>
+				</div>
 			</div>
 
-		<!-- Scripts -->
-			<script src="assets/js/jquery.min.js"></script>
-			<script src="assets/js/jquery.scrollex.min.js"></script>
-			<script src="assets/js/jquery.scrolly.min.js"></script>
-			<script src="assets/js/browser.min.js"></script>
-			<script src="assets/js/breakpoints.min.js"></script>
-			<script src="assets/js/util.js"></script>
-			<script src="assets/js/main.js"></script>
+			<div class="work-entry">
+				<span class="date">2023 - 2024</span>
+				<div class="content-wrapper">
+					<p class="work-content">Traveler, In Search of Enlightenment</p>
+					<p class="work-content">Burned out with an existential crisis Junior year and decided to study abroad in Iceland for my last semester of college. Traveled across Europe and Asia. Crossed some things off the bucket list.
 
+					Saw the northern lights more times than I can count. 
+					Went to my first F1 race in Shanghai. 
+					Saw pandas in Chengdu. 
+					Went to a Taylor Swift and Coldplay concert in Germany.</p>
+					<button class="edit-icon" onclick="toggleEdit(this)">
+						<i class="fas fa-pencil-alt"></i>
+					</button>
+				</div>
+			</div>
+
+			<div class="work-entry">
+				<span class="date">2021 - Now</span>
+				<div class="content-wrapper">
+					<p class="work-content">The crypto bull market drew me in, I finally stopped listening to what other people said about it and decided to learn myself and form my own judgement.
+
+					Some highlights:
+					- Bought Solana at $14 this most recent cycle
+					- Shorted Luna on Drift at $48, covered at $4 (then Drift's insurance fund ran out, fortunately I got my coins back)</p>
+					<button class="edit-icon" onclick="toggleEdit(this)">
+						<i class="fas fa-pencil-alt"></i>
+					</button>
+				</div>
+			</div>
+
+			<div class="work-entry">
+				<span class="date">December 2010 - August 2019</span>
+				<div class="content-wrapper">
+					<p class="work-content">Competitive Chess Player Before Queen's Gambit Blew it up
+					A member of the US delegation for World Youth Chess Championships in Uruguay and Greece</p>
+					<button class="edit-icon" onclick="toggleEdit(this)">
+						<i class="fas fa-pencil-alt"></i>
+					</button>
+				</div>
+			</div>
+		</main>
+
+		<footer>
+			<p>&copy; 2024 Marissa Li</p>
+		</footer>
+
+		<button id="loginBtn" class="auth-button" onclick="authenticate()">Update Me</button>
+		<button id="logoutBtn" class="auth-button" onclick="logout()" style="display: none;">Done</button>
+
+		<script>
+			let isAuthenticated = false;
+
+			function authenticate() {
+				const password = prompt("Please enter the password to edit:");
+				if (password === "focus") {
+					isAuthenticated = true;
+					// Show all edit buttons
+					document.querySelectorAll('.edit-icon').forEach(btn => {
+						btn.style.display = 'inline-block';
+					});
+					// Update login/logout buttons
+					document.getElementById('loginBtn').style.display = 'none';
+					document.getElementById('logoutBtn').style.display = 'inline-block';
+				} else {
+					alert("Incorrect password!");
+					logout();
+				}
+			}
+
+			function toggleEdit(button) {
+				if (!isAuthenticated) {
+					authenticate();
+					if (!isAuthenticated) return;
+				}
+				
+				const wrapper = button.closest('.content-wrapper');
+				const content = wrapper.querySelector('.work-content');
+				const form = wrapper.querySelector('.edit-form');
+				
+				if (!form) {
+					// Create edit form if it doesn't exist
+					const editForm = document.createElement('div');
+					editForm.className = 'edit-form';
+					editForm.style.display = 'none';
+					editForm.innerHTML = `
+						<textarea class="edit-textarea">${content.innerText}</textarea>
+						<button onclick="saveChanges(this)">Save</button>
+						<button onclick="cancelEdit(this)">Cancel</button>
+					`;
+					wrapper.appendChild(editForm);
+				}
+				
+				const textarea = wrapper.querySelector('.edit-textarea');
+				textarea.value = content.innerText;
+				content.style.display = 'none';
+				button.style.display = 'none';
+				wrapper.querySelector('.edit-form').style.display = 'block';
+			}
+
+			function saveChanges(button) {
+				const wrapper = button.closest('.content-wrapper');
+				const content = wrapper.querySelector('.work-content');
+				const form = wrapper.querySelector('.edit-form');
+				const textarea = form.querySelector('.edit-textarea');
+				
+				content.innerText = textarea.value;
+				content.style.display = 'block';
+				wrapper.querySelector('.edit-icon').style.display = 'inline-block';
+				form.style.display = 'none';
+			}
+
+			function cancelEdit(button) {
+				const wrapper = button.closest('.content-wrapper');
+				const content = wrapper.querySelector('.work-content');
+				const form = wrapper.querySelector('.edit-form');
+				
+				content.style.display = 'block';
+				wrapper.querySelector('.edit-icon').style.display = 'inline-block';
+				form.style.display = 'none';
+			}
+
+			function logout() {
+				isAuthenticated = false;
+				// Hide all edit buttons
+				document.querySelectorAll('.edit-icon').forEach(btn => {
+					btn.style.display = 'none';
+				});
+				// Update login/logout buttons
+				document.getElementById('loginBtn').style.display = 'inline-block';
+				document.getElementById('logoutBtn').style.display = 'none';
+			}
+		</script>
 	</body>
 </html>

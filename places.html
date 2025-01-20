@@ -1,0 +1,386 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>Places I've Been - Marissa Li</title>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+                font-family: 'Arial', sans-serif;
+            }
+
+            body {
+                line-height: 1.6;
+                color: #333;
+                max-width: 800px;
+                margin: 0 auto;
+                padding: 20px;
+                background-color: #f5f5f5;
+            }
+
+            .intro {
+                text-align: center;
+                padding: 60px 0;
+            }
+
+            .intro h1 {
+                font-size: 3em;
+                margin-bottom: 10px;
+            }
+
+            nav {
+                display: flex;
+                justify-content: space-between;
+                padding: 20px 0;
+                border-bottom: 1px solid #ddd;
+                margin-bottom: 40px;
+            }
+
+            .nav-links a {
+                margin-right: 20px;
+                text-decoration: none;
+                color: #333;
+            }
+
+            .auth-section {
+                display: flex;
+                align-items: center;
+            }
+
+            .login-btn {
+                padding: 5px 15px;
+                margin-right: 10px;
+                background: #4a4a4a;
+                color: white;
+                border: none;
+                border-radius: 3px;
+                cursor: pointer;
+            }
+
+            .social-links a {
+                margin-left: 15px;
+                color: #333;
+                font-size: 1.2em;
+            }
+
+            .map-container {
+                height: 500px;
+                width: 100%;
+                border-radius: 8px;
+                overflow: hidden;
+                margin-bottom: 30px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+
+            .places-list {
+                background: white;
+                padding: 30px;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+
+            .place-entry {
+                margin-bottom: 20px;
+                padding-bottom: 20px;
+                border-bottom: 1px solid #eee;
+            }
+
+            .place-entry:last-child {
+                border-bottom: none;
+                margin-bottom: 0;
+                padding-bottom: 0;
+            }
+
+            .leaflet-popup-content {
+                font-size: 14px;
+                line-height: 1.4;
+            }
+
+            .location-title {
+                font-weight: bold;
+                margin-bottom: 5px;
+            }
+
+            .location-date {
+                color: #666;
+                font-size: 0.9em;
+            }
+
+            .location-highlight {
+                font-style: italic;
+                margin-top: 5px;
+            }
+
+            footer {
+                text-align: center;
+                padding: 20px 0;
+                color: #666;
+                margin-top: 40px;
+            }
+
+            @media (max-width: 600px) {
+                body {
+                    padding: 10px;
+                }
+
+                .intro h1 {
+                    font-size: 2em;
+                }
+
+                nav {
+                    flex-direction: column;
+                    text-align: center;
+                }
+
+                .social-links {
+                    margin-top: 15px;
+                }
+
+                .map-container {
+                    height: 300px;
+                }
+            }
+
+            .auth-button {
+                position: fixed;
+                bottom: 30px;
+                right: 30px;
+                padding: 12px 24px;
+                background: #4a4a4a;
+                color: white;
+                border: none;
+                border-radius: 25px;
+                cursor: pointer;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+                transition: all 0.3s ease;
+                font-size: 14px;
+                z-index: 1000;
+            }
+
+            .auth-button:hover {
+                background: #666;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            }
+
+            .edit-icon {
+                position: absolute;
+                right: 20px;
+                top: 20px;
+                background: none;
+                border: none;
+                cursor: pointer;
+                color: #666;
+                padding: 8px;
+                transition: color 0.3s ease;
+                display: none;
+            }
+
+            .edit-icon:hover {
+                color: #333;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="intro">
+            <h1>Places I've Been</h1>
+        </div>
+
+        <nav>
+            <div class="nav-links">
+                <a href="index.html">My Work</a>
+                <a href="about.html">About</a>
+                <a href="places.html">Places I've Been</a>
+                <a href="health.html">Health</a>
+            </div>
+            <div class="social-links">
+                <a href="https://x.com/marissali_"><i class="fab fa-twitter"></i></a>
+                <a href="https://www.facebook.com/marissali.314/"><i class="fab fa-facebook"></i></a>
+                <a href="https://www.instagram.com/marissa.li314/"><i class="fab fa-instagram"></i></a>
+                <a href="https://github.com/marissali314"><i class="fab fa-github"></i></a>
+            </div>
+        </nav>
+
+        <main>
+            <div id="travel-map" class="map-container"></div>
+            <div class="places-list">
+                <div class="content-wrapper">
+                    <div id="places-content"></div>
+                    <button class="edit-icon" onclick="toggleEdit(this)">
+                        <i class="fas fa-pencil-alt"></i>
+                    </button>
+                    <div class="edit-form" style="display: none;">
+                        <textarea class="edit-textarea"></textarea>
+                        <button onclick="saveChanges(this)">Save</button>
+                        <button onclick="cancelEdit(this)">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2024 Marissa Li</p>
+        </footer>
+
+        <button id="loginBtn" class="auth-button" onclick="authenticate()">Update Me</button>
+        <button id="logoutBtn" class="auth-button" onclick="logout()" style="display: none;">Done</button>
+
+        <script>
+            let isAuthenticated = false;
+
+            function authenticate() {
+                const password = prompt("Please enter the password to edit:");
+                if (password === "focus") {
+                    isAuthenticated = true;
+                    document.querySelectorAll('.edit-icon').forEach(btn => {
+                        btn.style.display = 'inline-block';
+                    });
+                    document.getElementById('loginBtn').style.display = 'none';
+                    document.getElementById('logoutBtn').style.display = 'inline-block';
+                } else {
+                    alert("Incorrect password!");
+                    logout();
+                }
+            }
+
+            function logout() {
+                isAuthenticated = false;
+                document.querySelectorAll('.edit-icon').forEach(btn => {
+                    btn.style.display = 'none';
+                });
+                document.getElementById('loginBtn').style.display = 'inline-block';
+                document.getElementById('logoutBtn').style.display = 'none';
+            }
+
+            function toggleEdit(button) {
+                if (!isAuthenticated) {
+                    authenticate();
+                    if (!isAuthenticated) return;
+                }
+                
+                const wrapper = button.closest('.content-wrapper');
+                const content = wrapper.querySelector('#places-content');
+                const form = wrapper.querySelector('.edit-form');
+                
+                if (!form) {
+                    // Create edit form if it doesn't exist
+                    const editForm = document.createElement('div');
+                    editForm.className = 'edit-form';
+                    editForm.style.display = 'none';
+                    editForm.innerHTML = `
+                        <textarea class="edit-textarea">${content.innerText}</textarea>
+                        <button onclick="saveChanges(this)">Save</button>
+                        <button onclick="cancelEdit(this)">Cancel</button>
+                    `;
+                    wrapper.appendChild(editForm);
+                }
+                
+                const textarea = wrapper.querySelector('.edit-textarea');
+                textarea.value = content.innerText;
+                content.style.display = 'none';
+                button.style.display = 'none';
+                wrapper.querySelector('.edit-form').style.display = 'block';
+            }
+
+            function saveChanges(button) {
+                const wrapper = button.closest('.content-wrapper');
+                const content = wrapper.querySelector('#places-content');
+                const form = wrapper.querySelector('.edit-form');
+                const textarea = form.querySelector('.edit-textarea');
+                
+                content.innerText = textarea.value;
+                content.style.display = 'block';
+                wrapper.querySelector('.edit-icon').style.display = 'inline-block';
+                form.style.display = 'none';
+            }
+
+            function cancelEdit(button) {
+                const wrapper = button.closest('.content-wrapper');
+                const content = wrapper.querySelector('#places-content');
+                const form = wrapper.querySelector('.edit-form');
+                
+                content.style.display = 'block';
+                wrapper.querySelector('.edit-icon').style.display = 'inline-block';
+                form.style.display = 'none';
+            }
+
+            // Map initialization
+            const map = L.map('travel-map').setView([30, 0], 2);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+
+            const locations = [
+                {
+                    name: "Shanghai, China",
+                    coords: [31.2304, 121.4737],
+                    date: "2024",
+                    highlight: "F1 Race, City Exploration"
+                },
+                {
+                    name: "Chengdu, China",
+                    coords: [30.5728, 104.0668],
+                    date: "2024",
+                    highlight: "Panda Research Base"
+                },
+                {
+                    name: "Germany",
+                    coords: [51.1657, 10.4515],
+                    date: "2023",
+                    highlight: "Taylor Swift & Coldplay Concerts"
+                },
+                {
+                    name: "Iceland",
+                    coords: [64.9631, -19.0208],
+                    date: "2023",
+                    highlight: "Study Abroad, Northern Lights"
+                },
+                {
+                    name: "Uruguay",
+                    coords: [-32.5228, -55.7658],
+                    date: "2010-2019",
+                    highlight: "World Youth Chess Championships"
+                },
+                {
+                    name: "Greece",
+                    coords: [39.0742, 21.8243],
+                    date: "2010-2019",
+                    highlight: "World Youth Chess Championships"
+                }
+            ];
+
+            // Add markers and create list entries
+            const placesContent = document.getElementById('places-content');
+            let listHTML = '';
+
+            locations.forEach(location => {
+                // Add marker to map
+                const marker = L.marker(location.coords)
+                    .addTo(map)
+                    .bindPopup(`
+                        <div class="location-title">${location.name}</div>
+                        <div class="location-date">${location.date}</div>
+                        <div class="location-highlight">${location.highlight}</div>
+                    `);
+
+                // Add to list below map
+                listHTML += `
+                    <div class="place-entry">
+                        <div class="location-title">${location.name}</div>
+                        <div class="location-date">${location.date}</div>
+                        <div class="location-highlight">${location.highlight}</div>
+                    </div>
+                `;
+            });
+
+            placesContent.innerHTML = listHTML;
+        </script>
+    </body>
+</html> 
