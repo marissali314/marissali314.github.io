@@ -5,8 +5,9 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap">
         <link rel="stylesheet" href="css/style.css">
+        <script src="js/auth.js" defer></script>
     </head>
     <body>
         <div class="intro">
@@ -19,6 +20,7 @@
                 <a href="index.html">My Work</a>
                 <a href="about.html">About</a>
                 <a href="places.html">Places I've Been</a>
+                <a href="blog.html">Blog</a>
                 <a href="health.html">Health</a>
             </div>
             <div class="social-links">
@@ -29,6 +31,25 @@
             </div>
         </nav>
 
+        <div id="auth-modal" class="auth-modal">
+            <div class="auth-content">
+                <h2><i class="fas fa-lock"></i> Protected Health Information</h2>
+                <p>Please authenticate to view health records</p>
+                <div class="auth-input-group">
+                    <input type="password" id="password-input" placeholder="Enter password" />
+                    <button onclick="authenticate()" class="auth-submit">
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+                <div class="auth-biometric">
+                    <button onclick="authenticateWithBiometric()" class="biometric-button">
+                        <i class="fas fa-fingerprint"></i>
+                        Use Fingerprint
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <main id="health-content" style="display: none;">
             <div class="health-section">
                 <div class="content-wrapper">
@@ -36,6 +57,33 @@
                     <div class="health-item">
                         <p><strong>Location:</strong> Moved from Chicago to San Francisco. Currently in the process of changing doctors.</p>
                         <p><strong>Weight:</strong> ~155 lbs (self-described as overweight)</p>
+                    </div>
+                    <button class="edit-icon" onclick="toggleEdit(this)">
+                        <i class="fas fa-pencil-alt"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="health-section">
+                <div class="content-wrapper">
+                    <h2>Medical History</h2>
+                    <div class="health-item">
+                        <h3>Head Injury</h3>
+                        <ul>
+                            <li><strong>Concussion (7th Grade)</strong></li>
+                        </ul>
+
+                        <h3>Spine</h3>
+                        <ul>
+                            <li><strong>Scoliosis</strong> - Diagnosed in high school</li>
+                            <li><strong>Treatment:</strong> Schroth therapy during sophomore year of college</li>
+                        </ul>
+
+                        <h3>Vision</h3>
+                        <ul>
+                            <li><strong>Vision Correction:</strong> Orthokeratology (Ortho-K)</li>
+                            <li><strong>Duration:</strong> 7th grade through junior year of college</li>
+                        </ul>
                     </div>
                     <button class="edit-icon" onclick="toggleEdit(this)">
                         <i class="fas fa-pencil-alt"></i>
@@ -139,89 +187,5 @@
         <footer>
             <p>&copy; 2024 Marissa Li</p>
         </footer>
-
-        <button id="loginBtn" class="auth-button" onclick="authenticate()">Update Me</button>
-        <button id="logoutBtn" class="auth-button" onclick="logout()" style="display: none;">Done</button>
-
-        <div id="login-prompt" class="health-section" style="text-align: center; padding: 50px;">
-            <h2>Medical Information Access</h2>
-            <p style="margin: 20px 0;">This page contains private medical information. Please enter the password to view.</p>
-            <button class="auth-button" style="position: static; display: inline-block;" onclick="authenticateView()">Access Health Records</button>
-        </div>
-
-        <div id="auth-modal" class="modal-overlay">
-            <div class="modal">
-                <h2 id="modal-title">Authentication Required</h2>
-                <p id="modal-description">Please enter your password to access the health records.</p>
-                <input type="password" id="password-input" class="password-input" placeholder="Enter password" onkeypress="handleKeyPress(event)">
-                <div class="modal-buttons">
-                    <button class="modal-button secondary" onclick="closeAuthModal()">Cancel</button>
-                    <button class="modal-button primary" onclick="submitPassword()">Submit</button>
-                </div>
-            </div>
-        </div>
-
-        <script src="js/auth.js"></script>
-        <script>
-            let isViewAuthenticated = false;
-            let currentAuthMode = ''; // 'view' or 'edit'
-
-            window.onload = function() {
-                document.getElementById('health-content').style.display = 'none';
-                document.getElementById('login-prompt').style.display = 'block';
-            }
-
-            function showAuthModal(mode) {
-                currentAuthMode = mode;
-                const modalTitle = document.getElementById('modal-title');
-                const modalDescription = document.getElementById('modal-description');
-                
-                if (mode === 'edit') {
-                    modalTitle.textContent = 'Edit Mode Authentication';
-                    modalDescription.textContent = 'Please enter your password to make changes to the health records.';
-                } else {
-                    modalTitle.textContent = 'Authentication Required';
-                    modalDescription.textContent = 'Please enter your password to access the health records.';
-                }
-                
-                document.getElementById('auth-modal').style.display = 'block';
-                document.getElementById('password-input').value = '';
-                document.getElementById('password-input').focus();
-            }
-
-            function closeAuthModal() {
-                document.getElementById('auth-modal').style.display = 'none';
-                document.getElementById('password-input').value = '';
-            }
-
-            function handleKeyPress(event) {
-                if (event.key === 'Enter') {
-                    submitPassword();
-                }
-            }
-
-            function submitPassword() {
-                const password = document.getElementById('password-input').value;
-                if (password === 'focus') {
-                    if (currentAuthMode === 'edit') {
-                        authenticate();
-                    } else {
-                        authenticateView();
-                    }
-                    closeAuthModal();
-                } else {
-                    alert('Incorrect password!');
-                    document.getElementById('password-input').value = '';
-                }
-            }
-
-            function authenticateView() {
-                showAuthModal('view');
-                if (isViewAuthenticated) {
-                    document.getElementById('health-content').style.display = 'block';
-                    document.getElementById('login-prompt').style.display = 'none';
-                }
-            }
-        </script>
     </body>
 </html> 

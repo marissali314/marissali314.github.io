@@ -1,0 +1,139 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>Blog - Marissa Li</title>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap">
+        <link rel="stylesheet" href="css/style.css">
+    </head>
+    <body>
+        <div class="intro">
+            <h1>My Thoughts</h1>
+            <p>A collection of musings, reflections, and ideas</p>
+        </div>
+
+        <nav>
+            <div class="nav-links">
+                <a href="index.html">My Work</a>
+                <a href="about.html">About</a>
+                <a href="places.html">Places I've Been</a>
+                <a href="blog.html">Blog</a>
+                <a href="health.html">Health</a>
+            </div>
+            <div class="social-links">
+                <a href="https://x.com/marissali_"><i class="fab fa-twitter"></i></a>
+                <a href="https://www.facebook.com/marissali.314/"><i class="fab fa-facebook"></i></a>
+                <a href="https://www.instagram.com/marissa.li314/"><i class="fab fa-instagram"></i></a>
+                <a href="https://github.com/marissali314"><i class="fab fa-github"></i></a>
+            </div>
+        </nav>
+
+        <main>
+            <div id="new-post-button" style="display: none;">
+                <button class="primary-button" onclick="showNewPostForm()">
+                    <i class="fas fa-plus"></i> New Post
+                </button>
+            </div>
+
+            <div id="new-post-form" class="blog-form" style="display: none;">
+                <div class="blog-post">
+                    <input type="text" id="post-title" placeholder="Post Title" class="post-title-input">
+                    <textarea id="post-content" placeholder="Write your thoughts..." class="post-content-input"></textarea>
+                    <div class="post-actions">
+                        <button onclick="saveNewPost()" class="primary-button">Publish</button>
+                        <button onclick="cancelNewPost()" class="secondary-button">Cancel</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="blog-posts">
+                <div class="blog-post">
+                    <div class="content-wrapper">
+                        <span class="post-date">March 15, 2024</span>
+                        <h2 class="post-title">Finding My Path</h2>
+                        <div class="post-content">
+                            <p>Sometimes the most meaningful journeys are the ones that don't have a clear destination. When I left my comfortable life in Chicago to travel, many people thought I was making a mistake. But I've learned that growth often happens in these moments of uncertainty.</p>
+                            <p>The northern lights in Iceland taught me about patience and wonder. The bustling streets of Shanghai showed me different ways of living. And now, San Francisco is teaching me about reinvention and possibility.</p>
+                            <p>I don't have all the answers, and that's okay. What matters is staying true to myself and continuing to explore, learn, and grow.</p>
+                        </div>
+                        <button class="edit-icon" onclick="toggleEdit(this)">
+                            <i class="fas fa-pencil-alt"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2024 Marissa Li</p>
+        </footer>
+
+        <button id="loginBtn" class="auth-button" onclick="authenticate()">Update Me</button>
+        <button id="logoutBtn" class="auth-button" onclick="logout()" style="display: none;">Done</button>
+
+        <script src="js/auth.js"></script>
+        <script>
+            function showNewPostForm() {
+                document.getElementById('new-post-form').style.display = 'block';
+                document.getElementById('post-title').focus();
+            }
+
+            function cancelNewPost() {
+                document.getElementById('new-post-form').style.display = 'none';
+                document.getElementById('post-title').value = '';
+                document.getElementById('post-content').value = '';
+            }
+
+            function saveNewPost() {
+                const title = document.getElementById('post-title').value;
+                const content = document.getElementById('post-content').value;
+                
+                if (!title || !content) {
+                    alert('Please fill in both title and content');
+                    return;
+                }
+
+                const date = new Date().toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+
+                const postHTML = `
+                    <div class="blog-post">
+                        <div class="content-wrapper">
+                            <span class="post-date">${date}</span>
+                            <h2 class="post-title">${title}</h2>
+                            <div class="post-content">
+                                <p>${content.replace(/\n\n/g, '</p><p>')}</p>
+                            </div>
+                            <button class="edit-icon" onclick="toggleEdit(this)">
+                                <i class="fas fa-pencil-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+
+                document.getElementById('blog-posts').insertAdjacentHTML('afterbegin', postHTML);
+                cancelNewPost();
+            }
+
+            // Show new post button when authenticated
+            const originalAuthenticate = window.authenticate;
+            window.authenticate = function() {
+                originalAuthenticate();
+                if (isAuthenticated) {
+                    document.getElementById('new-post-button').style.display = 'block';
+                }
+            };
+
+            const originalLogout = window.logout;
+            window.logout = function() {
+                originalLogout();
+                document.getElementById('new-post-button').style.display = 'none';
+            };
+        </script>
+    </body>
+</html> 
